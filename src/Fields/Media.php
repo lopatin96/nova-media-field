@@ -39,7 +39,6 @@ class Media extends Field
             $collection = $attribute ?? $this->attribute;
     
             $this->value = $resource
-                ->user
                 ->getMedia($collection)
                 ->map(
                     fn (SpatieMedia $media) => $this->serializeMedia($media),
@@ -50,7 +49,7 @@ class Media extends Field
                 $this->checkCollectionIsMultiple($resource, $collection);
             }
         } else {
-            [$resource, $attribute] = explode('.', $attribute);
+            [$resourceTmp, $attribute] = explode('.', $attribute);
                 
             $collection = $attribute ?? $this->attribute;
 
