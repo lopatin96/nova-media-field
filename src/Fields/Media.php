@@ -38,6 +38,7 @@ class Media extends Field
         $collection = $attribute ?? $this->attribute;
 
         $this->value = $resource
+            ->user
             ->getMedia($collection)
             ->map(
                 fn (SpatieMedia $media) => $this->serializeMedia($media),
