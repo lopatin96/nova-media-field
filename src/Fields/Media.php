@@ -35,19 +35,40 @@ class Media extends Field
 
     public function resolve($resource, $attribute = null): void
     {
-        $collection = $attribute ?? $this->attribute;
+        if (count(explode ('.', $attribute)) === 1) {
+            $collection = $attribute ?? $this->attribute;
+    
+            $this->value = $resource
+                ->user
+                ->getMedia($collection)
+                ->map(
+                    fn (SpatieMedia $media) => $this->serializeMedia($media),
+                )
+                ->values();
+    
+            if ($collection) {
+                $this->checkCollectionIsMultiple($resource, $collection);
+            }
+        } else {
+            [$resource, $attribute] = explode('.', $attribute);
+                
+            $collection = $attribute ?? $this->attribute;
 
-        $this->value = $resource
-            ->user
-            ->getMedia($collection)
-            ->map(
-                fn (SpatieMedia $media) => $this->serializeMedia($media),
-            )
-            ->values();
-
-        if ($collection) {
-            $this->checkCollectionIsMultiple($resource, $collection);
+            $this->value = $resource
+                ->user
+                ->getMedia($collection)
+                ->map(
+                    fn (SpatieMedia $media) => $this->serializeMedia($media),
+                )
+                ->values();
+    
+            if ($collection) {
+                $this->checkCollectionIsMultiple($resource, $collection);
+            }
         }
+
+            
+        
     }
 
     public function temporary(Carbon $until): self
